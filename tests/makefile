@@ -27,9 +27,6 @@ utils.o : $(IBEX_TEST_DIR)/utils.cpp $(IBEX_TEST_DIR)/utils.h
 %.o :	%.cpp
 	$(CXX) $(CPPFLAGS) -I$(IBEX_TEST_DIR) $(CXXFLAGS) -c -o $@ $< $(LIBS)
 
-nonreg : nonreg.cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< $(LIBS)
-
 clean:
 	rm -f $(OBJS) $(TARGET)
 	
