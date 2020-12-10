@@ -7,7 +7,9 @@
 def options (opt):
 	opt.add_option ("--with-ensta-robotics", action="store_true",
 		dest="WITH_ENSTA_ROBOTICS", help = "Use ENSTA robotics plugin")
-
+		
+	opt.plugins["ensta-robotics"] = "WITH_ENSTA_ROBOTICS"
+	
 ######################
 ##### configure ######
 ######################
