@@ -1,42 +1,27 @@
-cmake_minimum_required (VERSION 3.0.2)
-
-message (WARNING "CMake support is still experimental, use waf to build Ibex")
+cmake_minimum_required (VERSION 3.5.1)
 
 project (IBEX_ROBOTICS VERSION 14.42 LANGUAGES CXX)
 set (IBEX_ROBOTICS_DESCRIPTION "Ensta-robotics plugin of Ibex")
+set (IBEX_MIN_VERSION_REQ 2.8.9.1)
 
-################################################################################
-# Options for install directory
-################################################################################
-set (CMAKE_INSTALL_INCLUDEDIR "include" CACHE PATH "C++ header files (include)")
-set (CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "object code libraries (lib)")
-
-################################################################################
-# Check that the compiler supports c++11
-################################################################################
-include(CheckCXXCompilerFlag)
-
-CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-if(COMPILER_SUPPORTS_CXX11)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-  message(FATAL_ERROR "Ibex needs a compiler with C++11 support")
-endif()
-
-if (WIN32)
-  # We need this for strdup under Windows (see issue #287)
-  add_definitions(-U__STRICT_ANSI__)
+# If IBEX_DIR was given on the command-line and not in the environment, set it
+# as an environment variable. Enable the usage of 'cmake -DIBEX_DIR=<path> ...'
+if (NOT DEFINED ENV{IBEX_DIR} AND DEFINED IBEX_DIR)
+  set (ENV{IBEX_DIR} "${IBEX_DIR}")
 endif ()
-
-################################################################################
-# Looking for Ibex
-################################################################################
-#find_package (IBEX 2.8.3 REQUIRED)
-include (FindPkgConfig)
-pkg_search_module (IBEX REQUIRED ibex)
+find_package (IBEX ${IBEX_MIN_VERSION_REQ} REQUIRED)
 message (STATUS "Found Ibex version ${IBEX_VERSION}")
+ibex_init_common () # Ibex should have installed this function
 
 ################################################################################
 # Compile sources
 ################################################################################
 add_subdirectory (src)
+
+################################################################################
+# Tests
+################################################################################
+# The following command assumes that the tests are in a tests/ subdirectory. So
+# the tests/ subdirectory must exist and must contain a CMakeLists.txt file.
+# If this is not the case, comment the next line.
+#add_make_target_for_ctest (check)
